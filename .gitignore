@@ -1,0 +1,94 @@
+# ============================================
+# Python
+# ============================================
+__pycache__/
+*.py[cod]
+*.pyo
+*.so
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+*.whl
+.Python
+pip-wheel-metadata/
+venv/
+.venv/
+env/
+.env/
+*.virtualenv
+
+# ============================================
+# STM32CubeMX
+# ============================================
+# 已注释掉以下四行，确保 Core 源码和 Drivers 驱动库能上传到 GitHub
+# Drivers/
+# Middlewares/
+# */Core/Src/
+# */Core/Inc/
+
+# CubeMX temp / log files
+*.mxproject
+*.log
+*.db.txt
+
+# ============================================
+# Keil MDK-ARM
+# ============================================
+# Output / listing files
+*.o
+*.obj
+*.crf
+*.d
+*.dep
+*.lst
+*.lnp
+*.htm
+*.axf
+*.elf
+*.out
+*.bin
+*.hex
+*.iex
+*.map
+*.lib
+*.a
+*.build_log.htm
+
+# Keil project artifacts (intermediate)
+Listings/
+Objects/
+*.uvguix.*
+*.uvguix
+*.scvd
+*.uvoptx
+JLinkLog.txt
+JLinkSettings.ini
+*.uvprojx.*
+*.ini
+*.SWS
+RTE/
+DebugConfig/
+
+# Keil pack installer downloads
+*.pack
+
+# ============================================
+# IDE / Editor
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.bak
+*.orig
+
+# ============================================
+# OS generated
+# ============================================
+Desktop.ini
+$RECYCLE.BIN/
