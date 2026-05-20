@@ -23,19 +23,19 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 typedef enum {
-    STATE_LINE_TRACKING  = 0,  // 正常巡线
+    STATE_LINE_TRACKING  = 0,  // 巡线
     STATE_WAITING_CMD    = 1,  // 发送begin，等待RK3588返回指令
     STATE_POST_JUNCTION  = 2,  // 越过路口状态，防止重复触发黑线
-    STATE_FINISHED       = 3   // 到达终点，永久停止
+    STATE_FINISHED       = 3   // 到达终点，停止
 } CarState_t;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define CMD_MAX_LEN        20    // 接收缓冲区大小
-#define JUNCTION_BLACK     1     // 压黑线 = 1（与 ir_sensor.c 一致）
+#define JUNCTION_BLACK     1     // 压黑线
 #define RECEIVE_TIMEOUT    5000  // 等待视觉指令的超时时间 (ms)
-#define JUNCTION_DEBOUNCE  1     // 连续几次全黑才确认是十字路口
+#define JUNCTION_DEBOUNCE  1     // 连续几次全黑才确认十字路口
 #define POST_JUNCTION_MS   450   // 越过十字路口盲开时间 (ms)
 /* USER CODE END PD */
 
@@ -109,12 +109,10 @@ int main(void)
     int L1, L2, R2, R1;
     IR_Read(&L1, &L2, &R2, &R1);
 
-    // =====================================================
-    // STATE_LINE_TRACKING: 正常巡线
-    // =====================================================
+    //巡线
     if (car_state == STATE_LINE_TRACKING)
     {
-        // 四个传感器全压黑线 → 路口
+        // 路口
         int all_black = (L1 == JUNCTION_BLACK && L2 == JUNCTION_BLACK &&
                          R2 == JUNCTION_BLACK && R1 == JUNCTION_BLACK);
 
@@ -148,9 +146,7 @@ int main(void)
             }
         }
     }
-    // =====================================================
-    // STATE_WAITING_CMD: 等待 RK3588 返回指令
-    // =====================================================
+    // 等待 RK3588 返回指令
     else if (car_state == STATE_WAITING_CMD)
     {
         char command[CMD_MAX_LEN] = {0};
@@ -166,16 +162,14 @@ int main(void)
         }
         else
         {
-            // 超时：无标识路口，默认直行
+            // 超时默认直行
             ExecuteCommand("go_straight");
         }
 
         post_junc_tick = HAL_GetTick();
         car_state = STATE_POST_JUNCTION;
     }
-    // =====================================================
-    // STATE_POST_JUNCTION: 盲开越过路口
-    // =====================================================
+    //  盲开越过路口
     else if (car_state == STATE_POST_JUNCTION)
     {
         CarAhead(80, 80);
@@ -184,9 +178,7 @@ int main(void)
             car_state = STATE_LINE_TRACKING;
         }
     }
-    // =====================================================
-    // STATE_FINISHED: 到达终点
-    // =====================================================
+    // 到达终点
     else if (car_state == STATE_FINISHED)
     {
         CarStop();
@@ -234,7 +226,7 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 
 /**
-  * @brief  通过 USART2 发送字符串（带 100ms 超时，不会死等）
+  * @brief  
   */
 void UART_SendString(const char *str)
 {
@@ -244,7 +236,7 @@ void UART_SendString(const char *str)
 /**
   * @brief  逐字节阻塞接收，遇换行符结束，超时返回 0
   * @param  cmd: 接收缓冲区
-  * @param  timeout_ms: 整体超时时间
+  * @param  timeout_ms: 超时时间
   * @retval 1=成功  0=超时
   */
 uint8_t UART_ReceiveCommand(char *cmd, uint16_t timeout_ms)
@@ -276,7 +268,7 @@ uint8_t UART_ReceiveCommand(char *cmd, uint16_t timeout_ms)
                     cmd[idx++] = ch;
             }
         }
-        // 单字节超时 → 继续循环，由整体超时兜底
+        
     }
 }
 
